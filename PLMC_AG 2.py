@@ -98,7 +98,7 @@ while (cont < TAMANHO_POPULACAO):
 
     Sol=[]
     tot=calculaCobertura(Sol)
-    
+
     while(tot<40):
         tota=tot
         faz=random.randint(0,39)
@@ -111,28 +111,28 @@ while (cont < TAMANHO_POPULACAO):
     ant=len(Sol)
     fa=red/ant
     pop.append([fa, Sol])
-    
+
     if (fa>faBest):
         faBest=fa
         Best=Sol[:]
-    
+
 #Gerações populacionais (laço)
 cont=0
-while(cont < CRITERIO_DE_PARADA): #gerações da população    
+while(cont < 200): #gerações da população
     cont+=1
     #Torneio
 
     #Seleção dos pais (20)
     pais = []
 
-   # Passo 1: Separar a lista em 20 grupos de 10 itens cada
-    grupos = [pop[i:i + 10] for i in range(0, len(pop), 10)]
+   # Passo 1: Separar a lista em 10 grupos de 20 itens cada
+    grupos = [pop[i:i + 20] for i in range(0, len(pop), 20)]
 
     # Passo 2: Encontrar as maiores funções de aptidão dentro de cada grupo e jogar esse individuo na lista de pais
-    pais = [max(grupo, key=lambda x: x[0]) for grupo in grupos]
+    pais = max(grupos, key=lambda grupo: max(item[0] for item in grupo))
 
     pop = pais[:]
-    
+
     #crossover (150 indivíduos)
     for i in range (TAXA_DE_CROSSOVER):
         ppai1=random.randint(0,19)
@@ -146,7 +146,7 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
         #1/3 do pai1
         for j in range (0,pos):
             filho.append(pai1[j])
-        
+
         #completar com o pai 2 que melhores a cobertura
         for j in range (len(pai2)):
             tota=calculaCobertura(filho)
@@ -156,7 +156,7 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
             if tota==tot:
                 pos=filho.index(cand)
                 del filho[pos]
-        
+
         #ajuste
         tot=calculaCobertura(filho)
         if tot<40:
@@ -176,47 +176,29 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
             Best=Sol[:]
 
     #mutação (30 indivíduos)
-    for i in range (TAXA_DE_MUTACAO):
-        ppai1=random.randint(0,19)
-        pai1=pais[ppai1][1]
-        k=0
-        #inserindo 2 fazendas no pai
-        while (k<2):
-            f1=random.randint(0,totF-1)
-            achou=0
-            for j in range(len(pai1)):
-                if pai1[j]==f1:
-                    achou=1
-                    break
-            if (achou==0):
-                pai1.append(f1)
-                k+=1
-                if k==1:
-                    faz1=f1
-                else:
-                    faz2=f1
+    def mutacao(TAXA_DE_MUTACAO):
+    # Sortear um pai da população
+      pai = random.choice(TAXA_DE_MUTACAO)
+      filho = pai[:]  # Clonar o pai para criar o filho
 
-        #retirar as fazendas redundantes
-        j=0
-        while (j<len(pai1)):
-            if pai1[j]!=faz1 and pai1[j]!=faz2:
-                pai2=pai1[:]
-                del (pai1[j])
-                tot=calculaCobertura(pai1)
-                if tot<40:
-                    pai1=pai2[:]
-                else:
-                    j-=1
-            j+=1
-        
-        red=calculaRedundancia(pai1)
-        ant=len(pai1)
-        fa=red/ant
-        pop.append([fa, pai1])
-        if (fa>faBest):
-            faBest=fa
-            Best=Sol[:]      
-    
+      # Sortear duas fazendas para garantir que elas estarão no filho
+      fazendas_sorteadas = random.sample(range(totF), 2)
+      for fazenda in fazendas_sorteadas:
+        if fazenda not in filho:
+            filho.append(fazenda)
+
+      # Remover fazendas redundantes, mantendo as sorteadas
+      fazendas_cobertas = set()
+      filho_final = []
+
+      for fazenda in filho:
+        if fazenda in fazendas_cobertas and fazenda not in fazendas_sorteadas:
+            continue  # Elimina a redundância
+        filho_final.append(fazenda)
+        fazendas_cobertas.add(fazenda)
+
+      return filho_final
+
 print("Melhor solução")
 print(Best)
-print("Aptidão Best",faBest)  
+print("Aptidão Best",faBest)
