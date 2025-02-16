@@ -126,10 +126,10 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
     pais = []
 
    # Passo 1: Separar a lista em 20 grupos de 10 itens cada
-    grupos = [pop[i:i + 20] for i in range(0, len(pop), 20)]
+    grupos = [pop[i:i + 10] for i in range(0, len(pop), 10)]
 
     # Passo 2: Encontrar as maiores funções de aptidão dentro de cada grupo e jogar esse individuo na lista de pais
-    pais = max(grupos, key=lambda grupo: max(item[0] for item in grupo))
+    pais = [max(grupo, key=lambda x: x[0]) for grupo in grupos]
 
     print(len(pais))
     pop = pais[:]
@@ -177,28 +177,46 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
             Best=Sol[:]
 
     #mutação (30 indivíduos)
-    def mutacao(TAXA_DE_MUTACAO):
-    # Sortear um pai da população
-      pai = random.choice(TAXA_DE_MUTACAO)
-      filho = pai[:]  # Clonar o pai para criar o filho
+    for i in range (30):
+        ppai1=random.randint(0,19)
+        pai1=pais[ppai1][1]
+        k=0
+        #inserindo 2 fazendas no pai
+        while (k<2):
+            f1=random.randint(0,totF-1)
+            achou=0
+            for j in range(len(pai1)):
+                if pai1[j]==f1:
+                    achou=1
+                    break
+            if (achou==0):
+                pai1.append(f1)
+                k+=1
+                if k==1:
+                    faz1=f1
+                else:
+                    faz2=f1
 
-      # Sortear duas fazendas para garantir que elas estarão no filho
-      fazendas_sorteadas = random.sample(range(totF), 2)
-      for fazenda in fazendas_sorteadas:
-        if fazenda not in filho:
-            filho.append(fazenda)
-
-      # Remover fazendas redundantes, mantendo as sorteadas
-      fazendas_cobertas = set()
-      filho_final = []
-
-      for fazenda in filho:
-        if fazenda in fazendas_cobertas and fazenda not in fazendas_sorteadas:
-            continue  # Elimina a redundância
-        filho_final.append(fazenda)
-        fazendas_cobertas.add(fazenda)
-
-      return filho_final
+        #retirar as fazendas redundantes
+        j=0
+        while (j<len(pai1)):
+            if pai1[j]!=faz1 and pai1[j]!=faz2:
+                pai2=pai1[:]
+                del (pai1[j])
+                tot=calculaCobertura(pai1)
+                if tot<40:
+                    pai1=pai2[:]
+                else:
+                    j-=1
+            j+=1
+        
+        red=calculaRedundancia(pai1)
+        ant=len(pai1)
+        fa=red/ant
+        pop.append([fa, pai1])
+        if (fa>faBest):
+            faBest=fa
+            Best=Sol[:]
 
 print("Melhor solução")
 print(Best)
