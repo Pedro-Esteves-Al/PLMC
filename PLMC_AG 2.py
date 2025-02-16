@@ -118,19 +118,20 @@ while (cont < TAMANHO_POPULACAO):
 
 #Gerações populacionais (laço)
 cont=0
-while(cont < 200): #gerações da população
+while(cont < CRITERIO_DE_PARADA): #gerações da população
     cont+=1
     #Torneio
 
     #Seleção dos pais (20)
     pais = []
 
-   # Passo 1: Separar a lista em 10 grupos de 20 itens cada
+   # Passo 1: Separar a lista em 20 grupos de 10 itens cada
     grupos = [pop[i:i + 20] for i in range(0, len(pop), 20)]
 
     # Passo 2: Encontrar as maiores funções de aptidão dentro de cada grupo e jogar esse individuo na lista de pais
     pais = max(grupos, key=lambda grupo: max(item[0] for item in grupo))
 
+    print(len(pais))
     pop = pais[:]
 
     #crossover (150 indivíduos)
