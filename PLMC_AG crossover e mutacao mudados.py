@@ -9,8 +9,8 @@ Crossover = sortear 2 pais (padrão - manter)
             completado com elementos do pai 2 até a max cobertura
             se necessário ajustar para cobrir as fazendas não cobertas
 Mutação =   sortear 1 pai (padrão - manter)
-            sortear 3 fazendas para inserir no filho
-            e eliminar as fazendas redundantes (exceto as sorteadas no tópico anterior)
+            sortear 1 fazenda para remover no filho
+            e ajustar
 '''
 
 TAMANHO_POPULACAO = 200
