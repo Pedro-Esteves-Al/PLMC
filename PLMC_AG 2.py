@@ -131,7 +131,6 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
     # Passo 2: Encontrar as maiores funções de aptidão dentro de cada grupo e jogar esse individuo na lista de pais
     pais = [max(grupo, key=lambda x: x[0]) for grupo in grupos]
 
-    print(len(pais))
     pop = pais[:]
 
     #crossover (150 indivíduos)
@@ -176,13 +175,13 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
             faBest=fa
             Best=Sol[:]
 
-    #mutação (30 indivíduos)
+   #mutação (30 indivíduos)
     for i in range (30):
         ppai1=random.randint(0,19)
         pai1=pais[ppai1][1]
         k=0
-        #inserindo 2 fazendas no pai
-        while (k<2):
+        #inserindo 3 fazendas no pai
+        while (k<3):
             f1=random.randint(0,totF-1)
             achou=0
             for j in range(len(pai1)):
@@ -218,6 +217,9 @@ while(cont < CRITERIO_DE_PARADA): #gerações da população
             faBest=fa
             Best=Sol[:]
 
+Best.sort()
 print("Melhor solução")
 print(Best)
 print("Aptidão Best",faBest)
+print("Quantidade de antenas")
+print(len(Best))
